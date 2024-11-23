@@ -1,0 +1,32 @@
+---
+- name: Update
+  hosts: server
+  serial: 1
+  gather_facts: true
+
+  tasks:
+    - name: Update all packages (Debian)
+        ansible.builtin.apt:
+          name: "*"
+          state: latests
+
+    - name: Perform a dist-upgrade (Debian)
+        ansible.builtin.apt:
+          Update_cache: true
+          upgrade: dist
+      when: ansible_distribution == 'Debian'
+
+    - name: check if a reboot is required
+        ansible.builtin.stat:
+          path: /var/run/reboot-required
+          get_md5: false
+      register: reboot_required_file
+
+    - name: Remove dependecies that are no longer required
+        ansible.builtin.apt:
+        autoremove: true
+      when: ansible_distribution == 'Debian'
+
+    - name: Reboot the server
+        ansible.builtin.reboot:
+      when: reboot_required_file.stat.exists

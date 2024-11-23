@@ -59,7 +59,7 @@ resource "azurerm_linux_virtual_machine" "k1ng45" {
 
   admin_ssh_key {
     username   = "adminuser"
-    public_key = file("/home/thiago/.ssh/id_rsa.pub")  # Caminho da chave SSH pública
+    public_key = file("/home/k1ng45/.ssh/id_rsa.pub")  # Caminho da chave SSH pública
   }
 
   os_disk {
