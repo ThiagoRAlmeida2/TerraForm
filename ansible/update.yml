@@ -5,21 +5,25 @@
   gather_facts: true
 
   tasks:
-    - name: Update all packages (Debian)
+    - name: Update the package list (Debian)
+      ansible.builtin.apt:
+        update_cache: true
+      when: ansible_distribution == 'Debian'
+
+    - name: Install all packages (Debian)
       ansible.builtin.apt:
         name: "*"
-        state: latest
+        state: present
+      when: ansible_distribution == 'Debian'
 
     - name: Perform a dist-upgrade (Debian)
       ansible.builtin.apt:
-        update_cache: true
         upgrade: dist
       when: ansible_distribution == 'Debian'
 
     - name: Check if a reboot is required
       ansible.builtin.stat:
         path: /var/run/reboot-required
-        get_md5: false
       register: reboot_required_file
 
     - name: Remove dependencies that are no longer required
