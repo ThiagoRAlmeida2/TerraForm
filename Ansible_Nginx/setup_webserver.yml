@@ -1,0 +1,53 @@
+---
+- name: Configurar servidor web com Nginx
+  hosts: all
+  become: true
+  tasks:
+    - name: Atualizar o cache de pacotes
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Instalar Nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+
+    - name: Configurar a página inicial personalizada
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        content: |
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Bem-vindo ao Nginx!</title>
+          </head>
+          <body>
+              <h1>Servidor Nginx configurado via Ansible</h1>
+              <p>Este é um exemplo de página inicial personalizada.</p>
+          </body>
+          </html>
+        mode: '0644'  # Definindo permissão seguras
+
+    - name: Habilitar e iniciar o serviço Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Permitir tráfego HTTP no UFW
+      community.general.ufw:
+        rule: allow
+        port: 8080
+        proto: tcp
+
+    - name: Habilitar o firewall UFW
+      ansible.builtin.command: ufw enable
+      register: ufw_enable_result
+      changed_when: "'Firewall is active' in ufw_enable_result.stdout"
+
+    - name: Reiniciar o Nginx para aplicar as alterações
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
