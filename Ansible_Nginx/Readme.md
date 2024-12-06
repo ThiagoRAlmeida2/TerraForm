@@ -148,7 +148,7 @@ http://<Ip_do_container>:8080
 http://<IP_DA_MAQUINA>:8080
 ```
 
-### Se o servidor estiver funcionando corretamente, você verá a página personalizada criada no passo 2.
+### Se o servidor estiver funcionando corretamente, você verá a página personalizada criada no passo 2
 
 ## 6. Conclusão
 
